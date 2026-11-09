@@ -1,0 +1,141 @@
+*{
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+}
+
+input{
+    background-color: transparent;
+    border-color: white;
+    color: white;
+    border-radius: 5px;
+    border-width: 2px;
+    border-style: solid;
+    padding: 6px;
+    margin: 8px;
+}
+
+input::-webkit-input-placeholder{
+    color: white;
+    opacity: 80%;
+}
+
+body{
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65) url(../img/bg.png);
+    background-size: cover;
+    background-blend-mode: darken;
+}
+
+nav button, #stok button, button.start, .DObutton{
+    background: rgba(255, 255, 255, 0.100);
+    border-style: solid;
+    border-color: white;
+    padding: 6.5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 3px;
+    border-width: 1px;
+    text-transform: uppercase;
+}
+
+nav button:hover, #stok button:hover, button.start:hover, .DObutton:hover{
+    background: rgba(255, 255, 255, 0.300);
+}
+
+.back button{
+    background-color: transparent;
+    border: none;
+}
+
+.back button:hover{
+    color: rgb(200, 200, 200);
+}
+
+.container{
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px;
+}
+
+.filterupbjj, .ekspedisi{
+    color: white;
+    border-radius: 3px;
+    padding: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: white;
+    margin-bottom: 10px;
+}
+
+.ListBA{
+    width: 100%;
+}
+
+thead th{
+    backdrop-filter: blur(10px);
+    text-align: center;
+    padding: 10px;
+    border-style: solid;
+    border-width: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.listBA tbody{
+    text-align: center;
+    padding: 8px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tooltip{
+    position: relative;
+    display: inline-block;
+    cursor: default;
+}
+
+.tooltip-text{
+    width: 200px;
+    visibility: hidden;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(2px);
+    padding: 10px;
+    position: absolute;
+    font-size: 80%;
+}
+
+.tooltip:hover .tooltip-text{
+    visibility: visible;
+}
+
+#app{
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+#tracking form input, .searchDO{
+    width: 50%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.newProgress{
+    width: 60%;
+}
+
+#donim::-webkit-inner-spin-button{
+    visibility: hidden;
+}
+
+#tracking{
+    padding-top: 0;
+}
+
+.dataTracking{
+    width: 600px;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
