@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Bahan Ajar - (Tugas 3 PBW)</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body>
+    <div id="app">
+    <section v-show="tab === 'home'">
+        <center>
+            <h2>Welcome to SITTA</h2>
+            <p>Apa yang kamu butuhkan mengenai bahan ajar tersedia di sini :D</p>
+            <button class="start" @click="tab = 'stok'">Get Started!</button>
+        </center>
+    </section>
+    <section v-show="tab === 'stok'">
+        <div class="back">
+            <button @click="tab = 'home'">Tutup Aplikasi</button>
+        </div>
+        <center>
+        <nav>
+            <button @click="tab = 'stok'">Stok Bahan Ajar</button>
+            <button @click="tab = 'tracking'">Tracking Order</button>
+            <button @click="tab = 'order'">Order Bahan Ajar</button>
+        </nav>
+        <h2>Daftar Stok Bahan Ajar</h2>
+        </center>
+        <div id="stok">
+        <!-- Fitur Filter -->
+        <center>
+            <table style="font-size: 85%;">
+                <tr><b>Filter and Sort</b></tr>
+                <tr>
+                    <td><input type="radio" v-model="sort" value="judul">Judul</td>
+                    <td><input type="radio" v-model="sort" value="qty">Stok</td>
+                    <td><input type="radio" v-model="sort" value="harga">Harga</td>
+                    <td>
+                        <button style="width:70px; padding: 1px;" @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'">
+                            {{ sortDir === 'asc' ? 'Naik' : 'Turun' }}
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            <select class="filterupbjj" v-model="filterUpbjj" name="upbjj">
+                <option value="" style="color:black;">Semua UPBJJ</option>
+                <option v-for="item in upbjjList" style="color:black;" :key="item" :value="item" style="color:black;">{{ item }}</option>
+            </select>
+            <select class="filterupbjj" v-model="filterKategori" name="kategori">
+                <option value="" style="color:black;">Semua Kategori</option>
+                <option v-for="item in kategoriList" style="color:black;" :key="item" :value="item" style="color:black;">{{ item }}</option>
+            </select>
+            <button class="reset" id="resetFilter" @click="reset">Reset</button>
+            <button class="search" @click="activeForm">Tambah Bahan Ajar Baru</button>
+        </center>
+
+            <!-- Form Tambah / Edit Bahan Ajar -->
+            <form v-if="showForm" v-on:keyup.esc="resetForm" v-on:keyup.esc="resetForm" v-on:keyup.enter="addItem" id="edit" @submit.prevent="addItem">
+                <h4>{{ isEdit ? 'Edit ' + newItem.kode : 'Tambah Bahan Ajar' }}</h4>
+                <input class="formfield" v-model="newItem.kode" placeholder="Kode" :disabled="isEdit">
+                <input class="formfield" v-model="newItem.judul" placeholder="Judul">
+                <select class="filterupbjj" v-model="newItem.upbjj">
+                    <option value="" disabled>UPBJJ</option>
+                    <option v-for="item in upbjjList" style="color:black;" :key="item" :value="item">{{ item }}</option>
+                </select>
+                <select class="filterupbjj" v-model="newItem.kategori">
+                    <option value="" disabled>Kategori</option>
+                    <option v-for="item in kategoriList"style="color:black;" :key="item" :value="item">{{ item }}</option>
+                </select>
+                <input class="formfield" v-model="newItem.lokasiRak" placeholder="Lokasi rak">
+                <input class="formfield" v-model.number="newItem.harga" type="number" placeholder="Harga">
+                <input class="formfield" v-model.number="newItem.qty" type="number" min="0" placeholder="Stok">
+                <input class="formfield" v-model.number="newItem.safety" type="number" min="0" placeholder="Stok aman">
+                <button style="border-color:red;" type="button" @click="cancelEdit">Batal</button>
+            </form>
+        <br>
+        <stockba :items="filterStok" @edit-item="setEdit" @delete-item="deleteItem"></stockba>
+        </div>
+    </section>
+    <section v-show="tab === 'tracking'">
+    <div class="back">
+        <button @click="tab = 'home'">Tutup Aplikasi</button>
+    </div>
+    <center>
+        <nav>
+            <button @click="tab = 'stok'">Stok Bahan Ajar</button>
+            <button @click="tab = 'tracking'">Tracking Order</button>
+            <button @click="tab = 'order'">Order Bahan Ajar</button>
+        </nav>
+        <h2>Tracking Bahan Ajar</h2>
+    </center>
+        <div class="container" id="tracking">
+            <!-- Fitur Cari Tracking -->
+            <center><h3>Cari Data Tracking Bahan Ajar</h3>
+            <input class="searchDO" v-model="search" type="text" v-on:keyup.enter="searchDO" v-on:keyup.esc="resetSearch" placeholder="Cari berdasarkan Nomor DO atau NIM">
+            <!-- Fitur Tambah Data Tracking -->
+            <h3>Tambahkan Data Tracking Bahan Ajar</h3>
+            <form @submit.prevent="addDOData">
+                <input type="text" placeholder="Nomor DO" :value="newNoDO" disabled>
+                <input type="text" placeholder="NIM" v-model="newDOTracking.nim">
+                <input type="text" placeholder="Nama"  v-model="newDOTracking.nama">
+                <input type="date" style="justify-content: center;" placeholder="Tanggal Kirim"  v-model="newDOTracking.tanggalKirim">
+                <div id="ekspedisi">
+                    <select class="ekspedisi" id="doekspedisi" v-model="newDOTracking.ekspedisi">
+                        <option value="" style="color:black;" selected disabled>Pilih Ekspedisi</option>
+                        <option v-for="x in pengirimanList" :key="x.kode || x" :value="x.kode || x" style="color:black;">JNE {{ x.nama }}</option>
+                    </select>
+                    <select class="ekspedisi" v-model="newDOTracking.paket">
+                        <option value="" style="color:black;" selected disabled>Pilih Paket Bahan Ajar</option>
+                        <option v-for="p in paket" :key="p.kode" :value="p.kode" style="color:black;">{{ p.kode }} ({{ p.nama }})</option>
+                    </select>
+                </div>
+                <div class="trackingprice" style="text-align: center;">
+                    <template v-if="newDOTracking.paket">
+                        <h3>Detail Paket</h3>
+                        <h4>Daftar Isi</h4>
+                        <p v-for="isi in detail.isi" :key="isi" style="font-size: 90%; list-style: none;">~ {{ isi }} ~</p>
+                        <div class="trackingprice" style="text-align: center;">
+                            <p><b>Total Harga: </b><span id="harga">Rp. {{ Number(detail.harga).toLocaleString('id-ID') }}</span></p>
+                        </div>
+                    </template>
+                    <div v-else style="text-align: center;">
+                        <span style="opacity: 60%;">--- Mohon pilih pake bahan ajar terlebih dahulu ---</span>
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="DObutton">Simpan Data DO</button>
+            </form></center>
+        
+        <!-- Daftar Data Tracking -->
+        <tracking :trackinglist="filterTracking" @add-progress="addProgress"></tracking>
+        <p v-if="search && filterTracking.length === 0" style="text-align:center;">Data tidak ditemukan.</p>
+    </div>
+    </section>
+    <section v-show="tab === 'order'">
+    <div class="back">
+        <button @click="tab = 'home'">Tutup Aplikasi</button>
+    </div>
+    <center>
+        <nav>
+            <button @click="tab = 'stok'">Stok Bahan Ajar</button>
+            <button @click="tab = 'tracking'">Tracking Order</button>
+            <button @click="tab = 'order'">Order Bahan Ajar</button>
+        </nav>
+        <h2>Form Order Bahan Ajar</h2>
+        <p>Segera hadir.</p>
+    </center>
+    </section>
+    </div>
+
+    <script src="js/components/status.js"></script>
+    <script src="js/components/stok-ba.js"></script>
+    <script src="js/components/tracking.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
